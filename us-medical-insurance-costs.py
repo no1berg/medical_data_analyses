@@ -1,17 +1,19 @@
 # pylint: disable= pointless-string-statement
+# |%%--%%| <9ThQ0hjEu2|tNwmeMZmG0>
+
 r"""°°°
 # U.S. Medical Insurance Costs
 °°°"""
 
-# |%%--%%| <2Rm7O1AnYU|yxC2c98IWP>
+# |%%--%%| <tNwmeMZmG0|yxC2c98IWP>
 r"""°°°
-# Project Overview
+## Project Overview
 For this project, you will be investigating a medical insurance costs dataset in a .csv file,  
 using the Python skills that you have developed.  
 This dataset and its parameters will seem familiar if you have,  
 done any of the previous Python projects in the data science path
 
-# Project Goals:
+## Project Goals:
 Work locally on your own computer  
 Import a dataset into your program  
 Analyze a dataset by building out functions or class methods  
@@ -29,10 +31,10 @@ r"""°°°
 import csv
 
 # Read the insurance.csv file
-with open("insurance.csv", newline="") as insurance_obj:
-    insurance_reader = csv.DictReader(insurance_obj)
-    for row in insurance_reader:
-        print(row)
+# with open("insurance.csv", newline="") as insurance_obj:
+#     insurance_reader = csv.DictReader(insurance_obj)
+#     for row in insurance_reader:
+#         print(row)
 
 
 # |%%--%%| <c4Qq0VYK3F|MFR1uAzWtf>
@@ -42,7 +44,7 @@ Data is stored in a .csv file, using delim = ",".
 °°°"""
 # |%%--%%| <MFR1uAzWtf|1xE9Ys6jkY>
 r"""°°°
-# Step 2. Define the scope of the analysis  
+## Step 2. Define the scope of the analysis  
 Potential Questions:
 * What is the average age of the patients?
 * What is the average cost (charge) of the patients?
@@ -63,9 +65,9 @@ Potential Questions:
 °°°"""
 # |%%--%%| <1xE9Ys6jkY|UCw8xLwycq>
 r"""°°°
-# Step 3. Import the *insurance.csv* dataset
+## Step 3. Import the *insurance.csv* dataset
 °°°"""
-# |%%--%%| <UCw8xLwycq|xK8mSQj3mb>
+# |%%--%%| <UCw8xLwycq|aKwpxSKW3Y>
 
 # Import libraries
 import csv
@@ -92,28 +94,51 @@ with open("insurance.csv", newline="") as insurance_csv:
             }
         )
         key += 1
-# |%%--%%| <xK8mSQj3mb|7724HFYqDY>
 
-# |%%--%%| <7724HFYqDY|Q5inowk3D2>
+# |%%--%%| <aKwpxSKW3Y|hXZ0UdRdRg>
+
 r"""°°°
-# Step 4. Data Analysis
+## Step 4. Data Analysis
+
+### Step 4.0 Defining Functions
+
 °°°"""
-
-# |%%--%%| <Q5inowk3D2|JD3ZdppvDS>
-
-# Is there a difference in average charge when grouped by sex?
-
-# Create a new dictionary with sex as the key
-insurance_sex_dict = {}
-for record in insurance_dict.values():
-    key = record.get("Sex")
-    insurance_sex_dict.setdefault(key, []).append(record)
-
-insurance_sex_dict["female"][2].get("Charges")
+# |%%--%%| <hXZ0UdRdRg|lFz1itt0Ad>
 
 
-def calculate_average_cost(data):
-    female_avg_charg_male_avg_charge = []
+# Create funtion to generate dictionary with key and details
+def create_dictionary(data, key):
+    """
+    Function for reconstructing a dictionary grouped by specified key
+    ---
+    data = dict
+    key = key to group by
+    """
+    temp_dictionary = {}
+    for record in data.values():
+        temp_keys = record.keys()
+        if key in temp_keys:
+            new_key_from_value = record.get(key)
+            temp_dictionary.setdefault(new_key_from_value, []).append(record)
+    print(f"Created dictionary with {list(temp_dictionary.keys())} as the keys.\n")
+    return temp_dictionary
+
+
+# |%%--%%| <lFz1itt0Ad|DfwlhTKlLN>
+
+
+# Create function to calculate average charge per group
+def calculate_average_charge(data):
+    """
+    Function for Calculating Average Charge per Group
+    ---
+
+    data = Dictionary
+
+    """
+    keys_list = list(data.keys())
+    charge_by_group = {}
+    counter = 0
     for record in data.values():
         total_charge = 0
         total_patients = len(record)
@@ -121,9 +146,51 @@ def calculate_average_cost(data):
             charge = float(details.get("Charges"))
             total_charge += charge
         average_charge = total_charge / float(total_patients)
-        female_avg_charg_male_avg_charge.append(average_charge)
-    return female_avg_charg_male_avg_charge
+        charge_by_group.setdefault(keys_list[counter], average_charge)
+        counter += 1
+    return charge_by_group
 
 
-f_m_avg_charge = calculate_average_cost(insurance_sex_dict)
-print(f_m_avg_charge)
+# |%%--%%| <DfwlhTKlLN|KKXeCJq1xp>
+r"""°°°
+### Step 4.1 Sexes
+Does average charge differ between 'male' and 'female' patients?
+°°°"""
+
+# |%%--%%| <KKXeCJq1xp|c4RIgMqccp>
+
+# Construct dict with 'Sex' values as keys
+insurance_sex_dict = create_dictionary(insurance_dict, "Sex")
+
+# Calculate the per group average of Sexes
+PRECISION = 2
+average_charges_sexes = calculate_average_charge(insurance_sex_dict)
+charge_sexes_dif = abs(average_charges_sexes["female"] - average_charges_sexes["male"])
+print(
+    f"Female patient average charge: {round(average_charges_sexes['female'], PRECISION)}"
+)
+print(f"Male patient average charge: {round(average_charges_sexes['male'], PRECISION)}")
+print(f"Difference between sexes: {round(charge_sexes_dif, PRECISION)}")
+# |%%--%%| <c4RIgMqccp|MO3Y7R8KcD>
+r"""°°°
+### Setp 4.2 Smoker Status
+°°°"""
+# |%%--%%| <MO3Y7R8KcD|6Ms6LGIMTx>
+
+# Construct dict with 'Smoker Status' as keys ('yes', 'no')
+insurance_smoker_dict = create_dictionary(insurance_dict, "Smoker")
+
+# Calculate the per group average of Smoker status
+average_charges_smokerstatus = calculate_average_charge(insurance_smoker_dict)
+charge_smokerstatus_dif = abs(
+    average_charges_smokerstatus["yes"] - average_charges_smokerstatus["no"]
+)
+print(
+    f"Smokers average insurance charge: {round(average_charges_smokerstatus['yes'], PRECISION)}"
+)
+print(
+    f"Non-smokers average insurance charge: {round(average_charges_smokerstatus['no'], PRECISION)}"
+)
+print(
+    f"Difference between Smokers and Non-smokers: {round(charge_smokerstatus_dif, PRECISION)}"
+)
