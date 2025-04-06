@@ -19,7 +19,6 @@ Import a dataset into your program
 Analyze a dataset by building out functions or class methods  
 Use libraries to assist in your analysis  
 Optional: Document and organize your findings  
-Optional: Make predictions about a dataset’s features based on your findings  
 °°°"""
 # |%%--%%| <yxC2c98IWP|SfhfwqE3OI>
 r"""°°°
@@ -53,14 +52,12 @@ Potential Questions:
     * Is there a difference in average charge when grouped by:
         * Sexes?
         * Smoker status?
-        * Region?
         * Number of children?
         * NB. These variables are likely confounded!
     * Is there a difference in average BMI when grouped by:
         * Sexes?
         * Smoker status?
         * Number of children?
-        * Region?
         * NB. These variables are likely confounded!
 °°°"""
 # |%%--%%| <1xE9Ys6jkY|UCw8xLwycq>
@@ -151,13 +148,40 @@ def calculate_average_charge(data):
     return charge_by_group
 
 
-# |%%--%%| <DfwlhTKlLN|KKXeCJq1xp>
+# |%%--%%| <DfwlhTKlLN|JSkIJcnpsm>
+
+
+# Create function to calculate average BMI per group
+def calculate_average_bmi(data):
+    """
+    Function for Calculating Average BMI per Group
+    ---
+
+    data = Dictionary
+
+    """
+    keys_list = list(data.keys())
+    bmi_by_group = {}
+    counter = 0
+    for record in data.values():
+        total_bmi = 0
+        total_patients = len(record)
+        for details in record:
+            bmi = float(details.get("BMI"))
+            total_bmi += bmi
+        average_bmi = total_bmi / float(total_patients)
+        bmi_by_group.setdefault(keys_list[counter], average_bmi)
+        counter += 1
+    return bmi_by_group
+
+
+# |%%--%%| <JSkIJcnpsm|22ufR3GPdA>
 r"""°°°
 ### Step 4.1 Sexes
 Does average charge differ between 'male' and 'female' patients?
 °°°"""
 
-# |%%--%%| <KKXeCJq1xp|c4RIgMqccp>
+# |%%--%%| <22ufR3GPdA|c4RIgMqccp>
 
 # Construct dict with 'Sex' values as keys
 insurance_sex_dict = create_dictionary(insurance_dict, "Sex")
@@ -167,11 +191,25 @@ PRECISION = 2
 average_charges_sexes = calculate_average_charge(insurance_sex_dict)
 charge_sexes_dif = abs(average_charges_sexes["female"] - average_charges_sexes["male"])
 print(
-    f"Female patient average charge: {round(average_charges_sexes['female'], PRECISION)}"
+    f"Female patients average charge: {round(average_charges_sexes['female'], PRECISION)}"
 )
-print(f"Male patient average charge: {round(average_charges_sexes['male'], PRECISION)}")
+print(
+    f"Male patients average charge: {round(average_charges_sexes['male'], PRECISION)}"
+)
 print(f"Difference between sexes: {round(charge_sexes_dif, PRECISION)}")
-# |%%--%%| <c4RIgMqccp|MO3Y7R8KcD>
+# |%%--%%| <c4RIgMqccp|t0sR9lhw9O>
+r"""°°°
+Does average BMI differ between 'male' and 'female' patients?
+°°°"""
+# |%%--%%| <t0sR9lhw9O|05H7qQsIec>
+# Calculate the per group average BMI of Sexes
+average_bmi_sexes = calculate_average_bmi(insurance_sex_dict)
+bmi_sexes_dif = abs(average_bmi_sexes["female"] - average_bmi_sexes["male"])
+print(f"Female patients average BMI: {round(average_bmi_sexes['female'], PRECISION)}")
+print(f"Male patients average BMI: {round(average_bmi_sexes['male'], PRECISION)}")
+print(f"Difference between sexes: {round(bmi_sexes_dif, PRECISION)}")
+
+# |%%--%%| <05H7qQsIec|MO3Y7R8KcD>
 r"""°°°
 ### Setp 4.2 Smoker Status
 °°°"""
@@ -194,3 +232,52 @@ print(
 print(
     f"Difference between Smokers and Non-smokers: {round(charge_smokerstatus_dif, PRECISION)}"
 )
+# |%%--%%| <6Ms6LGIMTx|cX3j53J0mJ>
+r"""°°°
+Does average BMI differ between Smokers and Non-smokers?
+°°°"""
+# |%%--%%| <cX3j53J0mJ|qoFnhEhpOv>
+
+# Calculate average BMI per group
+average_bmi_smokerstatus = calculate_average_bmi(insurance_smoker_dict)
+bmi_smokerstatus_dif = abs(
+    average_bmi_smokerstatus["yes"] - average_bmi_smokerstatus["no"]
+)
+print(
+    f"Smoking patients average BMI: {round(average_bmi_smokerstatus['yes'], PRECISION)}"
+)
+print(
+    f"Non-smoking patients average BMI: {round(average_bmi_smokerstatus['no'], PRECISION)}"
+)
+print(
+    f"Difference between smokers and non-smokers: {round(bmi_smokerstatus_dif, PRECISION)}"
+)
+
+# |%%--%%| <qoFnhEhpOv|7S76VxcnIP>
+r"""°°°
+### Step 4.3 Number of Children
+Is there a difference in average charge when grouped by number of children?
+°°°"""
+# |%%--%%| <7S76VxcnIP|uutu6cdBqs>
+
+# Create dict with number of children as the key
+insurance_children_dict = create_dictionary(insurance_dict, "Children")
+
+# Calculate average charge per group (number of children per patient)
+average_charges_children = calculate_average_charge(insurance_children_dict)
+for group in average_charges_children.items():
+    print(
+        f"Average charge for patients with {group[0]} children: {round(group[1], PRECISION)} "
+    )
+# |%%--%%| <uutu6cdBqs|Dojmy6JVuv>
+r"""°°°
+Is there a difference in average BMI when grouped by number of children?
+°°°"""
+# |%%--%%| <Dojmy6JVuv|jUXgBf7nuL>
+
+# Calculate average BMI per group (number of children)
+average_bmi_children = calculate_average_bmi(insurance_children_dict)
+for group in average_bmi_children.items():
+    print(
+        f"Average BMI for patients with {group[0]} children: {round(group[1], PRECISION)}"
+    )

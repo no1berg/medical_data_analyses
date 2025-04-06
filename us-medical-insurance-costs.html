@@ -7629,7 +7629,6 @@ Data is stored in a .csv file, using delim = ",".</p>
 <li>Is there a difference in average charge when grouped by:<ul>
 <li>Sexes?</li>
 <li>Smoker status?</li>
-<li>Region?</li>
 <li>Number of children?</li>
 <li>NB. These variables are likely confounded!</li>
 </ul>
@@ -7638,7 +7637,6 @@ Data is stored in a .csv file, using delim = ",".</p>
 <li>Sexes?</li>
 <li>Smoker status?</li>
 <li>Number of children?</li>
-<li>Region?</li>
 <li>NB. These variables are likely confounded!</li>
 </ul>
 </li>
@@ -7772,6 +7770,41 @@ Data is stored in a .csv file, using delim = ",".</p>
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Create function to calculate average BMI per group</span>
+<span class="k">def</span> <span class="nf">calculate_average_bmi</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Function for Calculating Average BMI per Group</span>
+<span class="sd">    ---</span>
+
+<span class="sd">    data = Dictionary</span>
+
+<span class="sd">    """</span>
+    <span class="n">keys_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">bmi_by_group</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">total_bmi</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">total_patients</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">details</span> <span class="ow">in</span> <span class="n">record</span><span class="p">:</span>
+            <span class="n">bmi</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"BMI"</span><span class="p">))</span>
+            <span class="n">total_bmi</span> <span class="o">+=</span> <span class="n">bmi</span>
+        <span class="n">average_bmi</span> <span class="o">=</span> <span class="n">total_bmi</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">total_patients</span><span class="p">)</span>
+        <span class="n">bmi_by_group</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">keys_list</span><span class="p">[</span><span class="n">counter</span><span class="p">],</span> <span class="n">average_bmi</span><span class="p">)</span>
+        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">bmi_by_group</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper" tabindex="0">
@@ -7799,9 +7832,11 @@ Data is stored in a .csv file, using delim = ",".</p>
 <span class="n">average_charges_sexes</span> <span class="o">=</span> <span class="n">calculate_average_charge</span><span class="p">(</span><span class="n">insurance_sex_dict</span><span class="p">)</span>
 <span class="n">charge_sexes_dif</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">average_charges_sexes</span><span class="p">[</span><span class="s2">"female"</span><span class="p">]</span> <span class="o">-</span> <span class="n">average_charges_sexes</span><span class="p">[</span><span class="s2">"male"</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">"Female patient average charge: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">average_charges_sexes</span><span class="p">[</span><span class="s1">'female'</span><span class="p">],</span><span class="w"> </span><span class="n">PRECISION</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+    <span class="sa">f</span><span class="s2">"Female patients average charge: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">average_charges_sexes</span><span class="p">[</span><span class="s1">'female'</span><span class="p">],</span><span class="w"> </span><span class="n">PRECISION</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Male patient average charge: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">average_charges_sexes</span><span class="p">[</span><span class="s1">'male'</span><span class="p">],</span><span class="w"> </span><span class="n">PRECISION</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"Male patients average charge: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">average_charges_sexes</span><span class="p">[</span><span class="s1">'male'</span><span class="p">],</span><span class="w"> </span><span class="n">PRECISION</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+<span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Difference between sexes: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">charge_sexes_dif</span><span class="p">,</span><span class="w"> </span><span class="n">PRECISION</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -7817,9 +7852,54 @@ Data is stored in a .csv file, using delim = ",".</p>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>Created dictionary with ['female', 'male'] as the keys.
 
-Female patient average charge: 12569.58
-Male patient average charge: 13956.75
+Female patients average charge: 12569.58
+Male patients average charge: 13956.75
 Difference between sexes: 1387.17
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Does average BMI differ between 'male' and 'female' patients?</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Calculate the per group average BMI of Sexes</span>
+<span class="n">average_bmi_sexes</span> <span class="o">=</span> <span class="n">calculate_average_bmi</span><span class="p">(</span><span class="n">insurance_sex_dict</span><span class="p">)</span>
+<span class="n">bmi_sexes_dif</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">average_bmi_sexes</span><span class="p">[</span><span class="s2">"female"</span><span class="p">]</span> <span class="o">-</span> <span class="n">average_bmi_sexes</span><span class="p">[</span><span class="s2">"male"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Female patients average BMI: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">average_bmi_sexes</span><span class="p">[</span><span class="s1">'female'</span><span class="p">],</span><span class="w"> </span><span class="n">PRECISION</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Male patients average BMI: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">average_bmi_sexes</span><span class="p">[</span><span class="s1">'male'</span><span class="p">],</span><span class="w"> </span><span class="n">PRECISION</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Difference between sexes: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">bmi_sexes_dif</span><span class="p">,</span><span class="w"> </span><span class="n">PRECISION</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Female patients average BMI: 30.38
+Male patients average BMI: 30.94
+Difference between sexes: 0.57
 </pre>
 </div>
 </div>
@@ -7841,7 +7921,7 @@ Difference between sexes: 1387.17
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Construct dict with 'Smoker Status' as keys ('yes', 'no')</span>
@@ -7878,6 +7958,160 @@ Difference between sexes: 1387.17
 Smokers average insurance charge: 32050.23
 Non-smokers average insurance charge: 8434.27
 Difference between Smokers and Non-smokers: 23615.96
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Does average BMI differ between Smokers and Non-smokers?</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Calculate average BMI per group</span>
+<span class="n">average_bmi_smokerstatus</span> <span class="o">=</span> <span class="n">calculate_average_bmi</span><span class="p">(</span><span class="n">insurance_smoker_dict</span><span class="p">)</span>
+<span class="n">bmi_smokerstatus_dif</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span>
+    <span class="n">average_bmi_smokerstatus</span><span class="p">[</span><span class="s2">"yes"</span><span class="p">]</span> <span class="o">-</span> <span class="n">average_bmi_smokerstatus</span><span class="p">[</span><span class="s2">"no"</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"Smoking patients average BMI: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">average_bmi_smokerstatus</span><span class="p">[</span><span class="s1">'yes'</span><span class="p">],</span><span class="w"> </span><span class="n">PRECISION</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"Non-smoking patients average BMI: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">average_bmi_smokerstatus</span><span class="p">[</span><span class="s1">'no'</span><span class="p">],</span><span class="w"> </span><span class="n">PRECISION</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">"Difference between smokers and non-smokers: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">bmi_smokerstatus_dif</span><span class="p">,</span><span class="w"> </span><span class="n">PRECISION</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Smoking patients average BMI: 30.71
+Non-smoking patients average BMI: 30.65
+Difference between smokers and non-smokers: 0.06
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Step-4.3-Number-of-Children">Step 4.3 Number of Children<a class="anchor-link" href="#Step-4.3-Number-of-Children">¶</a></h3><p>Is there a difference in average charge when grouped by number of children?</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Create dict with number of children as the key</span>
+<span class="n">insurance_children_dict</span> <span class="o">=</span> <span class="n">create_dictionary</span><span class="p">(</span><span class="n">insurance_dict</span><span class="p">,</span> <span class="s2">"Children"</span><span class="p">)</span>
+
+<span class="c1"># Calculate average charge per group (number of children per patient)</span>
+<span class="n">average_charges_children</span> <span class="o">=</span> <span class="n">calculate_average_charge</span><span class="p">(</span><span class="n">insurance_children_dict</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">average_charges_children</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"Average charge for patients with </span><span class="si">{</span><span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> children: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">PRECISION</span><span class="p">)</span><span class="si">}</span><span class="s2"> "</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Created dictionary with ['0', '1', '3', '2', '5', '4'] as the keys.
+
+Average charge for patients with 0 children: 12365.98 
+Average charge for patients with 1 children: 12731.17 
+Average charge for patients with 3 children: 15355.32 
+Average charge for patients with 2 children: 15073.56 
+Average charge for patients with 5 children: 8786.04 
+Average charge for patients with 4 children: 13850.66 
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Is there a difference in average BMI when grouped by number of children?</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Calculate average BMI per group (number of children)</span>
+<span class="n">average_bmi_children</span> <span class="o">=</span> <span class="n">calculate_average_bmi</span><span class="p">(</span><span class="n">insurance_children_dict</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">average_bmi_children</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"Average BMI for patients with </span><span class="si">{</span><span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> children: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">PRECISION</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Average BMI for patients with 0 children: 30.55
+Average BMI for patients with 1 children: 30.62
+Average BMI for patients with 3 children: 30.68
+Average BMI for patients with 2 children: 30.98
+Average BMI for patients with 5 children: 29.61
+Average BMI for patients with 4 children: 31.39
 </pre>
 </div>
 </div>
